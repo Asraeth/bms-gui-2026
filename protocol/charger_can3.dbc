@@ -1,0 +1,54 @@
+VERSION ""
+
+NS_ :
+
+BS_:
+
+BU_: BMS Charger
+
+BO_ 2164260863 BMS_Charger_Command: 8 BMS
+ SG_ Setpoint_BCD_Byte0 : 0|8@1+ (1,0) [0|153] "" Charger
+ SG_ Setpoint_BCD_Byte1 : 8|8@1+ (1,0) [0|153] "" Charger
+ SG_ Setpoint_BCD_Byte2 : 16|8@1+ (1,0) [0|153] "" Charger
+ SG_ Setpoint_BCD_Byte3 : 24|8@1+ (1,0) [0|153] "" Charger
+ SG_ Setpoint_BCD_Byte4 : 32|8@1+ (1,0) [0|153] "" Charger
+ SG_ Setpoint_BCD_Byte5 : 40|8@1+ (1,0) [0|153] "" Charger
+
+BO_ 2149580799 BMS_Charger_Inhibit: 8 BMS
+ SG_ Charger_Inhibit_Code : 0|24@1+ (1,0) [0|1.67772e+07] "" Charger
+
+BO_ 2165309440 Charger_Status: 8 Charger
+ SG_ Charger_State : 0|8@1+ (1,0) [0|5] "" BMS
+ SG_ Charger_UARTTimeout : 8|1@1+ (1,0) [0|1] "" BMS
+ SG_ Charger_LVFault : 9|1@1+ (1,0) [0|1] "" BMS
+ SG_ Charger_InputUV : 10|1@1+ (1,0) [0|1] "" BMS
+ SG_ Charger_InputOV : 11|1@1+ (1,0) [0|1] "" BMS
+ SG_ Charger_OutputOV : 12|1@1+ (1,0) [0|1] "" BMS
+ SG_ Charger_OutputOC : 13|1@1+ (1,0) [0|1] "" BMS
+ SG_ Charger_OutputPower : 14|1@1+ (1,0) [0|1] "" BMS
+ SG_ Charger_OverTemp : 15|1@1+ (1,0) [0|1] "" BMS
+ SG_ Charger_BatteryReverse : 16|1@1+ (1,0) [0|1] "" BMS
+ SG_ Charger_BatteryOV : 17|1@1+ (1,0) [0|1] "" BMS
+
+BO_ 2164260864 Charger_Measurements: 8 Charger
+ SG_ Charger_PFCVoltage : 0|16@1- (0.1,0) [-3276.8|3276.7] "" BMS
+ SG_ Charger_OutputVoltage : 16|16@1- (0.1,0) [-3276.8|3276.7] "" BMS
+ SG_ Charger_OutputCurrent : 32|16@1- (0.1,0) [-3276.8|3276.7] "" BMS
+ SG_ Charger_BatteryVoltage : 48|16@1- (0.1,0) [-3276.8|3276.7] "" BMS
+
+BO_ 2181038080 Charger_Thermal: 8 Charger
+ SG_ Charger_Power : 0|16@1- (1,0) [-32768|32767] "" BMS
+ SG_ Charger_PFCTemp : 16|16@1- (0.1,0) [-32768|32767] "" BMS
+ SG_ Charger_PSFBTemp : 32|16@1- (0.1,0) [-32768|32767] "" BMS
+ SG_ Charger_AuxTemp : 48|16@1- (0.1,0) [-32768|32767] "" BMS
+
+CM_ "Current supplied charger gateway; BCD setpoints, 500 kbit/s. Requires hardware protocol confirmation.";
+CM_ BO_ 2164260863 "BCD bytes 0..2 voltage /1000 V; bytes 3..5 current /100000 A";
+CM_ BO_ 2149580799 "AA 00 00 means inhibit; 00 00 00 healthy heartbeat only with deliberate charging enable";
+
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 65535;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_ "GenMsgCycleTime" BO_ 2164260863 100;
+BA_ "GenMsgCycleTime" BO_ 2149580799 100;
+
+VAL_ 2165309440 Charger_State 0 "Idle" 1 "BatteryConnected" 2 "Precharge" 3 "Active" 4 "Discharge" 5 "Error" ;

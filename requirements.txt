@@ -1,3 +1,5 @@
-matplotlib
-python-can
-python-can[serial]
+python-can>=4.3
+pyserial
+cantools>=39
+PySide6-Essentials>=6.5
+pyqtgraph>=0.13

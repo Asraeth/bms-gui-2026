@@ -1,48 +1,43 @@
-# BMS GUI Telemetry Display 
+# Integrated 2026 BMS GUI
 
-A Python application that provides a real-time graphical user interface (GUI) to display and plot telemetry data from our Battery Management System (BMS) via a CAN bus.
+This fork keeps its own Git history and uses the lead Qt GUI as the integration starting point.
+The final protocol is generated in the separate `g474-bms-2026` firmware repository.
 
-![BMS GUI Screenshot](docs/Screenshot_20250612_120653.png)
+```sh
+python -m pip install -r requirements.txt
+python bms_gui.py --demo
+python bms_gui.py --interface slcan --channel COM5 --bitrate 1000000 --connect
+python -m unittest discover -s tests -v
+```
 
-## Features
+Select the actual adapter/channel in the window. Supported python-can backends include slcan,
+gs_usb, PCAN, Kvaser, Vector, IXXAT, SocketCAN and virtual. SocketCAN bitrate is configured by the OS.
+The GUI connects to TSCAN (CAN1), normally 1 Mbit/s. IVT and charger buses are physically separate.
 
-* **Live Data Grid:** Displays incoming BMS data in a clean, organized table.
-* **Automatic Logging:** Automatically creates a CAN message log everytime the script is run.
-* **CAN Log:** Displays other CAN IDs in a list.
-* **Interactive Plotting:** Simply click on any data cell to generate a plot showing its value over time.
-* **Database Utility:** Includes a helper script to easily create the required CAN database (`.dbc`) file.
+The overview supports 14 boards × 8 populated cells and 8 logical temperature inputs (112 each),
+pack current/U1/U2, independent cell sum and voltage disagreement, SoC/energy, inverter limits,
+precharge, balancing and AMS state. Raw AUX and board-health tables show acquisition validity,
+calibration validity, PEC/counter counts and transport/stop faults separately. A BENCH firmware identity
+advertises one board; the remaining reference-layout positions stay unavailable.
 
+`bms_model.json` and `protocol/` are generated release artifacts. To update or check them, run from
+firmware:
 
-## Requirements
+```sh
+python tools/generate.py
+python tools/sync_gui_protocol.py ../bms-gui-2026
+python tools/sync_gui_protocol.py ../bms-gui-2026 --check
+```
 
-### Software
+Protocol/configuration version 2 is required. Writes require a fresh compatible BMS identity,
+documented bounds and matching transaction token. Short, remote and CAN-FD packets are rejected.
+GUI availability has no role in firmware protection. Device profiles and safety thresholds cannot be
+arbitrarily uploaded; runtime requests can lower electrical limits or select bounded documented settings.
 
-* Python 3.x
-* The following Python libraries:
-    * `tkinter` (Real-time GUI)
-    * `matplotlib` (Live Data plotting)
-    * `python-can` (CAN interface and data parsing)
-    * `cantools` (CAN Database creation and parsing)
+Raw CAN logs are written to `logs/` in candump format. `python log-reader.py FILE --output decoded.csv`
+decodes logs with the shipped DBC; the traffic tab and live plots use the same definitions.
 
-### Hardware
-
-* A CAN to USB adapter supported by `python-can`. This project was tested with an `slcan` adapter, but others may work.
-
-
-## Usage
-
-1.  **(Optional) Create CAN Database:**
-    * The default dbc file used by the team is generated with `db-maker.py` and it is provided in the `databases` folder.
-    * Modify the script if to generate your own
-    * Or for custom dbc file input, modify the dbc file path in the main file
-
-2.  **Configure the Application:**
-    * Open the main script and update the CAN bus interface (e.g., `'slcan'`, `'can0'`) and the path to your `.dbc` file.
-
-3.  **Run the GUI:**
-    * Make sure your CAN adapter is connected.
-    * Execute the main script to launch the telemetry display.
-    ```bash
-    python main6.py
-    ```
-
+The historical `main.py` … `main6.py` launch this application. Old seven-board DBC generators and
+ADBMS2950 schemas are retired; Git history retains them. `can-test.py` starts the virtual demo.
+Production temperature calibration and physical hardware verification remain pending. The demo is a
+software fixture and does not validate contactors, charger behavior, sensor calibration or balancing heat.

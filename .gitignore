@@ -2,3 +2,7 @@
 results*
 logs
 tempCodeRunnerFile.py
+__pycache__/
+*.pyc
+logs/
+.venv/

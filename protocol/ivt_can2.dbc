@@ -1,0 +1,55 @@
+VERSION ""
+
+NS_ :
+
+BS_:
+
+BU_: BMS IVT
+
+BO_ 1313 IVT_Msg_Result_I: 6 IVT
+ SG_ IVT_I_MuxID : 0|8@1+ (1,0) [0|255] "" BMS
+ SG_ IVT_I_Counter : 8|4@1+ (1,0) [0|15] "" BMS
+ SG_ IVT_I_Status : 12|4@1+ (1,0) [0|15] "" BMS
+ SG_ IVT_I : 23|32@0- (0.001,0) [-2.14748e+06|2.14748e+06] "A" BMS
+
+BO_ 1314 IVT_Msg_Result_U1: 6 IVT
+ SG_ IVT_U1_MuxID : 0|8@1+ (1,0) [0|255] "" BMS
+ SG_ IVT_U1_Counter : 8|4@1+ (1,0) [0|15] "" BMS
+ SG_ IVT_U1_Status : 12|4@1+ (1,0) [0|15] "" BMS
+ SG_ IVT_U1 : 23|32@0- (0.001,0) [-2.14748e+06|2.14748e+06] "V" BMS
+
+BO_ 1315 IVT_Msg_Result_U2: 6 IVT
+ SG_ IVT_U2_MuxID : 0|8@1+ (1,0) [0|255] "" BMS
+ SG_ IVT_U2_Counter : 8|4@1+ (1,0) [0|15] "" BMS
+ SG_ IVT_U2_Status : 12|4@1+ (1,0) [0|15] "" BMS
+ SG_ IVT_U2 : 23|32@0- (0.001,0) [-2.14748e+06|2.14748e+06] "V" BMS
+
+BO_ 1320 IVT_Msg_Result_Wh: 6 IVT
+ SG_ IVT_Wh_MuxID : 0|8@1+ (1,0) [0|255] "" BMS
+ SG_ IVT_Wh_Counter : 8|4@1+ (1,0) [0|15] "" BMS
+ SG_ IVT_Wh_Status : 12|4@1+ (1,0) [0|15] "" BMS
+ SG_ IVT_Wh : 23|32@0- (1,0) [-2.14748e+09|2.14748e+09] "Wh" BMS
+
+BO_ 1041 IVT_Msg_Command: 8 BMS
+ SG_ IVT_Command_ID : 0|8@1+ (1,0) [0|255] "" IVT
+ SG_ IVT_Command_Data : 15|56@0+ (1,0) [0|7.20576e+16] "" IVT
+
+BO_ 1297 IVT_Msg_Response: 8 IVT
+ SG_ IVT_Response_ID : 0|8@1+ (1,0) [0|255] "" BMS
+ SG_ IVT_Response_Data : 15|56@0+ (1,0) [0|7.20576e+16] "" BMS
+
+CM_ "IVT-S on CAN2, 500 kbit/s, factory default IDs (IVT-S datasheet v1.01)";
+CM_ SG_ 1313 IVT_I_Status "bit0 OCS, bit1 result error/out of range, bit2 any result error, bit3 system error";
+CM_ SG_ 1314 IVT_U1_Status "bit0 OCS, bit1 result error/out of range, bit2 any result error, bit3 system error";
+CM_ SG_ 1315 IVT_U2_Status "bit0 OCS, bit1 result error/out of range, bit2 any result error, bit3 system error";
+CM_ SG_ 1320 IVT_Wh_Status "bit0 OCS, bit1 result error/out of range, bit2 any result error, bit3 system error";
+CM_ BO_ 1041 "Commands to the IVT, sent at start-up";
+CM_ BO_ 1297 "Command responses (filtered out by the BMS)";
+
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 65535;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_ "GenMsgCycleTime" BO_ 1313 4;
+BA_ "GenMsgCycleTime" BO_ 1314 4;
+BA_ "GenMsgCycleTime" BO_ 1315 4;
+BA_ "GenMsgCycleTime" BO_ 1320 100;
+
