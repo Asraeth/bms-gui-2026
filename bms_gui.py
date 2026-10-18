@@ -825,7 +825,7 @@ class MainWindow(QMainWindow):
                 decoded = None
             if decoded is not None and key in self.messages:
                 self.store.update(t, decoded)
-                if message.name=="BMS_Identity":self.settings.observe_identity(decoded["BMS_ProtocolVersion"],decoded["BMS_ConfigVersion"])
+                if message.name=="BMS_Identity":self.settings.observe_identity(decoded["BMS_ProtocolVersion"],decoded["BMS_ConfigVersion"],decoded["BMS_Slaves"],decoded["BMS_CellsPerSlave"],decoded["BMS_TempsPerSlave"])
         st = self.id_stats.get(key)
         if st is None:
             st = self.id_stats[key] = {"count": 0, "times": deque(maxlen=50), "name": message.name if message else ""}

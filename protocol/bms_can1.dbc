@@ -21,7 +21,7 @@ BO_ 2147529217 BMS_Status: 8 BMS
  SG_ Fault_Current : 3|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ Fault_OpenWire : 4|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ Fault_IVT : 5|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ Fault_Can : 7|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Fault_CAN : 7|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ Fault_Startup : 6|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ Fault_Output_Active : 8|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ TSAC_Ready : 9|1@1+ (1,0) [0|1] "" Vector__XXX

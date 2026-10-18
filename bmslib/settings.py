@@ -73,9 +73,11 @@ class SettingsClient:
         self.identity_at=None
         self.compatible=False
 
-    def observe_identity(self,protocol,config):
+    def observe_identity(self,protocol,config,slaves=None,cells=None,temps=None):
         self.identity_at=self.clock()
         self.compatible=protocol==self.model.protocol_version and config==self.model.config_version
+        if slaves is not None:
+            self.compatible = self.compatible and (slaves,cells,temps)==(self.model.slaves,self.model.cells_per_slave,self.model.temps_per_slave)
         if not self.compatible:self.cancel()
 
     # ---- Commands ------------------------------------------------------------------------------

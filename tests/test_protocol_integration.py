@@ -1,4 +1,4 @@
-import json,struct,time,unittest
+import csv,json,struct,time,unittest
 from pathlib import Path
 import can,cantools
 from PySide6.QtWidgets import QApplication
@@ -73,3 +73,24 @@ class SyntheticWindowTest(unittest.TestCase):
   self.frame('BMS_Quality',BMS_CellsValid=0,BMS_CelsiusValid=0)
   w._refresh_cards(time.time())
   self.assertEqual(w.value('BMS_CellsValid'),0)
+
+ def test_actual_firmware_trace_reaches_gui(self):
+  w=self.window;m=w.model
+  with (Path(__file__).resolve().parents[1]/'protocol/firmware_trace.csv').open() as f:
+   for row in csv.DictReader(f):
+    if row['bus']=='1' and row['from_mcu']=='1':
+     w._handle(can.Message(timestamp=time.time(),arbitration_id=int(row['id'],16),is_extended_id=row['ext']=='1',data=bytes.fromhex(row['data'])))
+  for board in range(14):
+   for cell in range(8):self.assertAlmostEqual(w.value(m.cell_voltage(board,cell)),3.70+board*0.004+cell*0.001,delta=0.002)
+   for sensor in range(8):self.assertAlmostEqual(w.value(m.cell_temp(board,sensor)),20+board+sensor*0.5,delta=0.3)
+  self.assertAlmostEqual(w.value('Fast_Pack_Current'),123.4,places=2)
+  self.assertEqual(w.value('BMS_CellsValid'),1)
+  self.assertEqual(w.value('BMS_FaultMask'),0)
+  self.assertTrue(w.settings.compatible)
+  w._refresh_cards(time.time());w._refresh_diagnostics()
+ def test_bench_model_and_wrong_topology_write_inhibition(self):
+  model=Model(str(Path(__file__).resolve().parents[1]/'bms_model_bench.json'))
+  self.assertEqual(model.total_cells,8)
+  sent=[];client=SettingsClient(model,lambda i,d:sent.append(d))
+  client.observe_identity(2,2,14,8,8);client.write(1,60000);self.assertFalse(sent)
+  client.observe_identity(2,2,1,8,8);client.write(1,60000);self.assertTrue(sent)

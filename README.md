@@ -18,7 +18,7 @@ The overview supports 14 boards × 8 populated cells and 8 logical temperature i
 pack current/U1/U2, independent cell sum and voltage disagreement, SoC/energy, inverter limits,
 precharge, balancing and AMS state. Raw AUX and board-health tables show acquisition validity,
 calibration validity, PEC/counter counts and transport/stop faults separately. A BENCH firmware identity
-advertises one board; the remaining reference-layout positions stay unavailable.
+advertises one board. Select `--model bms_model_bench.json` for eight cells and eight raw AUX inputs. The default 14-board view inhibits settings writes to a different topology.
 
 `bms_model.json` and `protocol/` are generated release artifacts. To update or check them, run from
 firmware:
